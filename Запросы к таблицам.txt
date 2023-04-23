@@ -1,0 +1,46 @@
+ 1. 
+ a)   //Скрипт - создание 2 таблиц
+
+CREATE TABLE CONTAINER(
+id INT IDENTITY PRIMARY KEY NOT NULL,
+Number FLOAT NOT NULL,
+Type VARCHAR(100) NOT NULL,
+Length FLOAT NOT NULL,
+Width FLOAT NOT NULL,
+Height FLOAT NOT NULL,
+Weight FLOAT NOT NULL,
+EmptyNotEmpty bit NOT NULL,
+DateOfReceipt smalldatetime NOT NULL);
+
+
+CREATE TABLE OPERATIONS(
+id INT IDENTITY NOT NULL,
+Id_container INT,
+StartDateOfTheOperation smalldatetime NOT NULL,
+EndDateOfTheOperation smalldatetime NOT NULL,
+Type_operation VARCHAR(100) NOT NULL,
+Operator_name VARCHAR(50) NOT NULL,
+PlaceOfInspection VARCHAR(256) NOT NULL,
+FOREIGN KEY(Id_container) REFERENCES container(id),
+PRIMARY KEY (id,Id_container));
+
+
+
+
+//Добавление данных в таблицы
+
+INSERT INTO container (Number, Type, Length, Width, Height, Weight, EmptyNotEmpty, DateOfReceipt) VALUES (13.8, 'Refrigerated container', 3.5, 3.1, 3.12, 2.7, 1, '2023-15-04 13:03:37');
+INSERT INTO container (Number, Type, Length, Width, Height, Weight, EmptyNotEmpty, DateOfReceipt) VALUES (13.1, 'container tank', 4.1, 3.3, 3.10, 3.3, 0, '2023-14-04 14:00:45');
+
+INSERT INTO operations (Id_container,StartDateOfTheOperation, EndDateOfTheOperation, Type_operation, Operator_name, PlaceOfInspection) VALUES (1,'2023-14-04 14:00:45','2023-15-04 17:00:45','unloading','Ivanov Ivan Ivanovich','Russia,Vladivostok, embankment street 21b');
+INSERT INTO operations (Id_container,StartDateOfTheOperation, EndDateOfTheOperation, Type_operation, Operator_name, PlaceOfInspection) VALUES (2,'2023-15-04 14:00:45','2023-18-04 23:00:45','discharge','Petrov Petr Petrovich','Japan, Kobe, Hyogo Prefecture');
+
+
+b.)  //Запрос, выбирающий из первой таблицы все данные по контейнерам в формате JSON не используя встроенную функцию
+      SELECT * FROM CONTAINER FOR JSON PATH;
+
+c.)  // запрос, выбирающий из второй таблицы все данные по операциям для определенного контейнера в формате JSON не используя встроенную функцию
+     SELECT * FROM OPERATIONS WHERE Id_container = 1 FOR JSON PATH;
+
+
+

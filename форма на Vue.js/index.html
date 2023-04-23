@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Database</h1>
+    <table>
+      <tr>
+        <td>
+          Sity:
+          <select v-model="selectedCity">
+            <option disabled value="">Select subject</option>
+            <option v-for="(workshops, city) in cities" :value="city">{{ city }}</option>
+          </select>
+          <br><br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Workshop:
+          <select v-model="selectedWorkshop">
+            <option disabled value="">Please select subject first</option>
+            <option v-for="workshop in workshopKeys" :value="workshop">{{ workshop }}</option>
+          </select>
+          <br><br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Employee:
+          <select v-model="selectedEmployee">
+            <option disabled value="">Please select topic first</option>
+            <option v-for="employee in employees" :value="employee">{{ employee }}</option>
+          </select>
+          <br><br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Brigade:
+          <select v-model="selectedBrigade">
+            <option disabled value="">Please select topic first</option>
+            <option v-for="brigade in brigades" :value="brigade">{{ brigade }}</option>
+          </select>
+          <br><br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Pair:
+          <select v-model="selectedPair">
+            <option disabled value="">Please select topic first</option>
+            <option v-for="pair in pairs" :value="pair">{{ pair }}</option>
+          </select>
+          <br><br>
+        </td>
+      </tr>
+    </table>
+    <button @click="convertToJson">Convert to JSON</button>
+  </div>
+
+  <script>
+var subjectObject = {
+  "Moscow": {
+    "Workshop Moscow 1": ["Employee 1 Msc", "Employee 2 Msc", "Employee 3 Msc", "Employee 4 Msc","Employee 5 Msc"],
+    "Workshop Moscow 2": ["Employee 6 Mcs", "Employee 7 Msc", "Employee 8 Msc", "Employee 9 Msc","Employee 10 Msc"],
+    "Workshop Moscow 3": ["Employee 11 Msc", "Employee 12 Msc", "Employee 13 Msc", "Employee 14 Msc","Employee 15 Msc"],  
+    "Workshop Moscow 4": ["Employee 16 Msc", "Employee 17 Msc", "Employee 18 Msc", "Employee 19 Msc","Employee 20 Msc"] 
+  },
+  "Sankt-Peterburg": {
+    "Workshop Piter 1": ["Employee 1 Spb", "Employee 2 Spb", "Employee 3 Spb", "Employee 4 Spb","Employee 5 Spb"],
+    "Workshop Piter 2": ["Employee 6 Spb", "Employee 7 Spb", "Employee 8 Spb", "Employee 9 Spb","Employee 10 Spb"],
+    "Workshop Piter 3": ["Employee 11 Spb", "Employee 12 Spb", "Employee 13 Spb", "Employee 14 Spb","Employee 15 Spb"],  
+    "Workshop Piter 4": ["Employee 16 Spb", "Employee 17 Spb", "Employee 18 Spb", "Employee 19 Spb","Employee 20 Spb"] 
+  },
+  "Ekaterinburg": {
+    "Workshop Ekb 1": ["Employee 1 Ekb", "Employee 2 Ekb", "Employee 3 Ekb", "Employee 4 Ekb","Employee 5 Ekb"],
+    "Workshop Ekb 2": ["Employee 6 Ekb", "Employee 7 Ekb", "Employee 8 Ekb", "Employee 9 Ekb","Employee 10 Ekb"],
+    "Workshop Ekb 3": ["Employee 11 Ekb", "Employee 12 Ekb", "Employee 13 Ekb", "Employee 14 Ekb","Employee 15 Ekb"],  
+    "Workshop Ekb 4": ["Employee 16 Ekb", "Employee 17 Ekb", "Employee 18 Ekb", "Employee 19 Ekb","Employee 20 Ekb"] 
+  },
+  "Samara": {
+    "Workshop Sma 1": ["Employee 1 Sma", "Employee 2 Sma", "Employee 3 Sma", "Employee 4 Sma","Employee 5 Sma"],
+    "Workshop Sma 2": ["Employee 6 Sma", "Employee 7 Sma", "Employee 8 Sma", "Employee 9 Sma","Employee 10 Sma"],
+    "Workshop Sma 3": ["Employee 11 Sma", "Employee 12 Sma", "Employee 13 Sma", "Employee 14 Sma","Employee 15 Sma"],  
+    "Workshop Sma 4": ["Employee 16 Sma", "Employee 17 Sma", "Employee 18 Sma", "Employee 19 Sma","Employee 20 Sma"] 
+  },
+  "Krasnodar": {
+    "Workshop Krsndr 1": ["Employee 1 Krsndr", "Employee 2 Krsndr", "Employee 3 Krsndr", "Employee 4 Krsndr","Employee 5 Krsndr"],
+    "Workshop Krsndr 2": ["Employee 6 Krsndr", "Employee 7 Krsndr", "Employee 8 Krsndr", "Employee 9 Krsndr","Employee 10 Krsndr"],
+    "Workshop Krsndr 3": ["Employee 11 Krsndr", "Employee 12 Krsndr", "Employee 13 Krsndr", "Employee 14 Krsndr","Employee 15 Krsndr"],  
+    "Workshop Krsndr 4": ["Employee 16 Krsndr", "Employee 17 Krsndr", "Employee 18 Krsndr", "Employee 19 Krsndr","Employee 20 Krsndr"] 
+  },
+}
+    const app = Vue.createApp({
+      data() {
+        return {
+          cities: subjectObject,
+          selectedCity: '',
+          selectedWorkshop: '',
+          selectedEmployee: '',
+          selectedBrigade: '',
+          selectedPair: ''
+        }
+      },
+computed: {
+  workshopKeys() {
+    return this.selectedCity ? Object.keys(this.cities[this.selectedCity]) : [];
+  },
+employees() {
+    if (this.selectedCity && this.selectedWorkshop) {
+      return this.cities[this.selectedCity][this.selectedWorkshop];
+    } else {
+      return [];
+    }
+},
+        brigades() {
+          return ['brigade 1', 'brigade 2', 'brigade 3', 'brigade 4', 'brigade 5'];
+        },
+        pairs() {
+          return this.brigades;
+        }
+      },
+      methods: {
+        convertToJson() {
+          const selectedData = {
+            Sity: this.selectedCity,
+            Workshop: this.selectedWorkshop,
+            Employee: this.selectedEmployee,
+            Brigade: this.selectedBrigade,
+            Pair: this.selectedPair
+          };
+          
+          this.saveJsonToFile(selectedData, 'selected-parameters');
+          this.saveToCookie(selectedData);
+        },
+        saveJsonToFile(jsonData, fileName) {
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+          const downloadAnchorNode = document.createElement('a');
+          downloadAnchorNode.setAttribute("href", dataStr);
+downloadAnchorNode.setAttribute("download", fileName + ".json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    },
+    saveToCookie(jsonData) {
+      const expirationDate = new Date();
+      expirationDate.setTime(expirationDate.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
+      const expires = "expires=" + expirationDate.toUTCString();
+      document.cookie = "selectedParameters=" + JSON.stringify(jsonData) + ";" + expires + ";path=/";
+    }
+  }
+});
+
+app.mount('#app');
+ </script>
+</body>
+</html>
